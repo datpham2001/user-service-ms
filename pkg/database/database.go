@@ -48,6 +48,10 @@ func getDSN(cfg *config.Config) string {
 	)
 }
 
+func (d *Database) GetDB() *gorm.DB {
+	return d.DB
+}
+
 func (d *Database) Close() error {
 	if d.DB != nil {
 		sqlDB, err := d.DB.DB()

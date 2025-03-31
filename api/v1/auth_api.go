@@ -11,7 +11,7 @@ type AuthHandler interface {
 	Signup(c *gin.Context)
 }
 
-func SetupAuthRoutes(router *gin.RouterGroup, authHandler AuthHandler) {
+func SetupAuthRoutes(router *gin.RouterGroup, authHandler AuthHandler, middlewares ...gin.HandlerFunc) {
 	authGroup := router.Group("/auth")
 	{
 		authGroup.POST("/signup", authHandler.Signup)

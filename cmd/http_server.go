@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (s *ServerManager) StartHttpServer() {
+func (s *ServerManager) StartHttpServer(authHandler *auth.AuthHandler) {
 	router := gin.New()
 
 	// init middlewares
@@ -23,9 +23,7 @@ func (s *ServerManager) StartHttpServer() {
 		middlewareManager.CommonHandle(),
 	)
 
-	var authSvc auth.AuthService = nil
-	authHandler := auth.NewAuthHandler(authSvc)
-	setupRoutes(router, authHandler)
+	setupRoutes(router, authHandler, loggerMiddleware.Handle())
 
 	s.HTTPServer = &http.Server{
 		Addr:    fmt.Sprintf(":%s", appConfig.Server.Http.Port),
@@ -40,7 +38,6 @@ func (s *ServerManager) StartHttpServer() {
 	}()
 }
 
-func setupRoutes(router *gin.Engine, authHandler *auth.AuthHandler) {
-	// API version 1
-	apiv1.SetupAPIRoutes(router, authHandler)
+func setupRoutes(router *gin.Engine, authHandler *auth.AuthHandler, middlewares ...gin.HandlerFunc) {
+	apiv1.SetupAPIRoutes(router, authHandler, middlewares...)
 }

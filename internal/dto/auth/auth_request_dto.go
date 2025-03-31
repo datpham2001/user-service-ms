@@ -1,13 +1,13 @@
-package auth
+package dto
 
 import "github.com/datpham/user-service-ms/internal/util"
 
-type SignupRequest struct {
+type UserSignupRequest struct {
 	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required,min=8"`
 }
 
-func (r *SignupRequest) Validate() error {
+func (r *UserSignupRequest) Validate() error {
 	if err := util.ValidateEmail(r.Email); err != nil {
 		return err
 	}
@@ -17,4 +17,9 @@ func (r *SignupRequest) Validate() error {
 	}
 
 	return nil
+}
+
+type UserLoginRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=8"`
 }

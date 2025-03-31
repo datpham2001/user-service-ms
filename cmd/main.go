@@ -7,6 +7,10 @@ import (
 	"os"
 
 	"github.com/datpham/user-service-ms/config"
+	authHandler "github.com/datpham/user-service-ms/internal/delivery/http/auth"
+	authRepo "github.com/datpham/user-service-ms/internal/repository/auth"
+	authSvc "github.com/datpham/user-service-ms/internal/service/auth"
+	tokensvc "github.com/datpham/user-service-ms/internal/service/token"
 	"github.com/datpham/user-service-ms/pkg/cache"
 	"github.com/datpham/user-service-ms/pkg/database"
 	"github.com/datpham/user-service-ms/pkg/logger"
@@ -74,12 +78,22 @@ func main() {
 		serverManager.ShutdownGRPCServer()
 		serverManager.ShutdownHTTPServer(ctx)
 	}()
+	// init db connection
+	dbConn := pkgDatabase.GetDB()
 
-	grpcServerRegistry := &UserService{}
+	// init repositories
+	authRepo := authRepo.New(dbConn)
+
+	// init services
+	tokenSvc := tokensvc.NewJwtToken(appConfig.Jwt.Secret)
+	authSvc := authSvc.New(pkgLogger, authRepo, tokenSvc)
+
+	// init handlers
+	authHandler := authHandler.New(authSvc)
 
 	go func() {
-		serverManager.StartGrpcServer(grpcServerRegistry)
-		serverManager.StartHttpServer()
+		//serverManager.StartGrpcServer(grpcServerRegistry)
+		serverManager.StartHttpServer(authHandler)
 	}()
 
 	<-ctx.Done()

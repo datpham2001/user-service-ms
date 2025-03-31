@@ -5,6 +5,7 @@ type Config struct {
 	Server   ServerConfig   `yaml:"server" mapstructure:"server"`
 	Database DatabaseConfig `yaml:"database" mapstructure:"database"`
 	Cache    CacheConfig    `yaml:"cache" mapstructure:"cache"`
+	Jwt      JwtConfig      `yaml:"jwt" mapstructure:"jwt"`
 }
 
 type ServerConfig struct {
@@ -43,4 +44,8 @@ type CacheConfig struct {
 	Port     string `yaml:"port" mapstructure:"port"`
 	Password string `yaml:"password" mapstructure:"password"`
 	DB       int    `yaml:"db" mapstructure:"db"`
+}
+
+type JwtConfig struct {
+	Secret string `yaml:"secret" mapstructure:"secret"`
 }
