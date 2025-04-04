@@ -1,8 +1,8 @@
-package service
+package auth
 
 import dto "github.com/datpham/user-service-ms/internal/dto/auth"
 
-func ConvertToUserLoginResponse(accessToken string, refreshToken string) *dto.UserLoginResponse {
+func (s *AuthService) mapToUserLoginResponse(accessToken string, refreshToken string) *dto.UserLoginResponse {
 	return &dto.UserLoginResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,

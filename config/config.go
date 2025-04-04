@@ -1,11 +1,12 @@
 package config
 
 type Config struct {
-	Env      string         `yaml:"env" mapstructure:"env"`
-	Server   ServerConfig   `yaml:"server" mapstructure:"server"`
-	Database DatabaseConfig `yaml:"database" mapstructure:"database"`
-	Cache    CacheConfig    `yaml:"cache" mapstructure:"cache"`
-	Jwt      JwtConfig      `yaml:"jwt" mapstructure:"jwt"`
+	Env      string            `yaml:"env" mapstructure:"env"`
+	Server   ServerConfig      `yaml:"server" mapstructure:"server"`
+	Database DatabaseConfig    `yaml:"database" mapstructure:"database"`
+	Cache    CacheConfig       `yaml:"cache" mapstructure:"cache"`
+	Jwt      JwtConfig         `yaml:"jwt" mapstructure:"jwt"`
+	OAuth    GoogleOAuthConfig `yaml:"oauth" mapstructure:"oauth"`
 }
 
 type ServerConfig struct {
@@ -48,4 +49,10 @@ type CacheConfig struct {
 
 type JwtConfig struct {
 	Secret string `yaml:"secret" mapstructure:"secret"`
+}
+
+type GoogleOAuthConfig struct {
+	ClientID     string `yaml:"client_id" mapstructure:"client_id"`
+	ClientSecret string `yaml:"client_secret" mapstructure:"client_secret"`
+	RedirectURL  string `yaml:"redirect_url" mapstructure:"redirect_url"`
 }

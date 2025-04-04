@@ -23,3 +23,8 @@ type UserLoginRequest struct {
 	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required,min=8"`
 }
+
+type GoogleCallbackRequest struct {
+	State string `form:"state" binding:"required"`
+	Code  string `form:"code" binding:"required"`
+}

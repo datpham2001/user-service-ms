@@ -66,3 +66,7 @@ func ErrorService(c *gin.Context, err error) {
 
 	c.JSON(statusCode, NewResponse(statusCode, customErr.Error(), nil))
 }
+
+func Redirect(c *gin.Context, url string) {
+	c.Redirect(http.StatusTemporaryRedirect, url)
+}
