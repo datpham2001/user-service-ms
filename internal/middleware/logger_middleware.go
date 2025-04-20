@@ -40,7 +40,7 @@ func (lm *LoggerMiddleware) Handle() gin.HandlerFunc {
 		c.Writer.Header().Set(X_REQUEST_ID, requestID)
 
 		// Create a logger entry with request info
-		logEntry := logger.WithRequestID(requestID).WithFields(map[string]interface{}{
+		logEntry := logger.WithRequestID(requestID).WithFields(map[string]any{
 			logger.FieldMethod: c.Request.Method,
 			logger.FieldPath:   c.Request.URL.Path,
 			logger.FieldIP:     c.ClientIP(),
@@ -64,7 +64,7 @@ func (lm *LoggerMiddleware) Handle() gin.HandlerFunc {
 		duration := time.Since(start)
 
 		// Update log entry with response info
-		logEntry = logEntry.WithFields(map[string]interface{}{
+		logEntry = logEntry.WithFields(map[string]any{
 			logger.FieldStatusCode: c.Writer.Status(),
 			logger.FieldDuration:   duration.String(),
 		})

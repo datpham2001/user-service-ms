@@ -51,10 +51,10 @@ func checkGrpcConfig() bool {
 
 func LoggingUnaryInterceptor(
 	ctx context.Context,
-	req interface{},
+	req any,
 	info *grpc.UnaryServerInfo,
 	handler grpc.UnaryHandler,
-) (interface{}, error) {
+) (any, error) {
 	start := time.Now()
 
 	pkgLogger.Printf("GRPC request: %s", info.FullMethod)

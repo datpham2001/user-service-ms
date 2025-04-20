@@ -135,7 +135,7 @@ type LoggerConfig struct {
 	// EnableJSON enables JSON formatting (auto-enabled in production)
 	EnableJSON bool
 	// Fields are additional fields to include with every log entry
-	Fields map[string]interface{}
+	Fields map[string]any
 }
 
 // Logger wraps logrus.Logger
@@ -236,13 +236,13 @@ func (l *Logger) WithComponent(component string) *logrus.Entry {
 }
 
 // WithFields adds multiple fields to the logger entry
-func (l *Logger) WithFields(fields map[string]interface{}) *logrus.Entry {
+func (l *Logger) WithFields(fields map[string]any) *logrus.Entry {
 	return l.baseEntry.WithFields(logrus.Fields(fields))
 }
 
 // Field creates a logging field for a map of fields
-func Field(key string, value interface{}) map[string]interface{} {
-	return map[string]interface{}{key: value}
+func Field(key string, value any) map[string]any {
+	return map[string]any{key: value}
 }
 
 // addCallerInfo adds caller information to the entry if enabled
@@ -278,7 +278,7 @@ func trimFilePath(path string) string {
 }
 
 // Debug logs a debug message with optional fields
-func (l *Logger) Debug(msg string, fields ...map[string]interface{}) {
+func (l *Logger) Debug(msg string, fields ...map[string]any) {
 	entry := l.baseEntry
 	for _, f := range fields {
 		entry = entry.WithFields(logrus.Fields(f))
@@ -287,7 +287,7 @@ func (l *Logger) Debug(msg string, fields ...map[string]interface{}) {
 }
 
 // Info logs an info message with optional fields
-func (l *Logger) Info(msg string, fields ...map[string]interface{}) {
+func (l *Logger) Info(msg string, fields ...map[string]any) {
 	entry := l.baseEntry
 	for _, f := range fields {
 		entry = entry.WithFields(logrus.Fields(f))
@@ -296,7 +296,7 @@ func (l *Logger) Info(msg string, fields ...map[string]interface{}) {
 }
 
 // Warn logs a warning message with optional fields
-func (l *Logger) Warn(msg string, fields ...map[string]interface{}) {
+func (l *Logger) Warn(msg string, fields ...map[string]any) {
 	entry := l.baseEntry
 	for _, f := range fields {
 		entry = entry.WithFields(logrus.Fields(f))
@@ -305,7 +305,7 @@ func (l *Logger) Warn(msg string, fields ...map[string]interface{}) {
 }
 
 // Error logs an error message with optional fields
-func (l *Logger) Error(msg string, fields ...map[string]interface{}) {
+func (l *Logger) Error(msg string, fields ...map[string]any) {
 	entry := l.baseEntry
 	for _, f := range fields {
 		entry = entry.WithFields(logrus.Fields(f))
@@ -314,7 +314,7 @@ func (l *Logger) Error(msg string, fields ...map[string]interface{}) {
 }
 
 // Fatal logs a fatal message with optional fields and exits
-func (l *Logger) Fatal(msg string, fields ...map[string]interface{}) {
+func (l *Logger) Fatal(msg string, fields ...map[string]any) {
 	entry := l.baseEntry
 	for _, f := range fields {
 		entry = entry.WithFields(logrus.Fields(f))
@@ -323,32 +323,32 @@ func (l *Logger) Fatal(msg string, fields ...map[string]interface{}) {
 }
 
 // Debugf logs a debug message with formatting
-func (l *Logger) Debugf(format string, args ...interface{}) {
+func (l *Logger) Debugf(format string, args ...any) {
 	l.addCallerInfo(l.baseEntry).Debugf(format, args...)
 }
 
 // Infof logs an info message with formatting
-func (l *Logger) Infof(format string, args ...interface{}) {
+func (l *Logger) Infof(format string, args ...any) {
 	l.addCallerInfo(l.baseEntry).Infof(format, args...)
 }
 
 // Warnf logs a warning message with formatting
-func (l *Logger) Warnf(format string, args ...interface{}) {
+func (l *Logger) Warnf(format string, args ...any) {
 	l.addCallerInfo(l.baseEntry).Warnf(format, args...)
 }
 
 // Errorf logs an error message with formatting
-func (l *Logger) Errorf(format string, args ...interface{}) {
+func (l *Logger) Errorf(format string, args ...any) {
 	l.addCallerInfo(l.baseEntry).Errorf(format, args...)
 }
 
 // Fatalf logs a fatal message with formatting and exits
-func (l *Logger) Fatalf(format string, args ...interface{}) {
+func (l *Logger) Fatalf(format string, args ...any) {
 	l.addCallerInfo(l.baseEntry).Fatalf(format, args...)
 }
 
 // ErrorErr logs an error with a message
-func (l *Logger) ErrorErr(err error, msg string, fields ...map[string]interface{}) {
+func (l *Logger) ErrorErr(err error, msg string, fields ...map[string]any) {
 	if err == nil {
 		return
 	}
@@ -360,77 +360,77 @@ func (l *Logger) ErrorErr(err error, msg string, fields ...map[string]interface{
 }
 
 // Debug uses the default logger to log a debug message
-func Debug(msg string, fields ...map[string]interface{}) {
+func Debug(msg string, fields ...map[string]any) {
 	if defaultLogger != nil {
 		defaultLogger.Debug(msg, fields...)
 	}
 }
 
 // Info uses the default logger to log an info message
-func Info(msg string, fields ...map[string]interface{}) {
+func Info(msg string, fields ...map[string]any) {
 	if defaultLogger != nil {
 		defaultLogger.Info(msg, fields...)
 	}
 }
 
 // Warn uses the default logger to log a warning message
-func Warn(msg string, fields ...map[string]interface{}) {
+func Warn(msg string, fields ...map[string]any) {
 	if defaultLogger != nil {
 		defaultLogger.Warn(msg, fields...)
 	}
 }
 
 // Error uses the default logger to log an error message
-func Error(msg string, fields ...map[string]interface{}) {
+func Error(msg string, fields ...map[string]any) {
 	if defaultLogger != nil {
 		defaultLogger.Error(msg, fields...)
 	}
 }
 
 // Fatal uses the default logger to log a fatal message and exit
-func Fatal(msg string, fields ...map[string]interface{}) {
+func Fatal(msg string, fields ...map[string]any) {
 	if defaultLogger != nil {
 		defaultLogger.Fatal(msg, fields...)
 	}
 }
 
 // Debugf uses the default logger to log a debug message with formatting
-func Debugf(format string, args ...interface{}) {
+func Debugf(format string, args ...any) {
 	if defaultLogger != nil {
 		defaultLogger.Debugf(format, args...)
 	}
 }
 
 // Infof uses the default logger to log an info message with formatting
-func Infof(format string, args ...interface{}) {
+func Infof(format string, args ...any) {
 	if defaultLogger != nil {
 		defaultLogger.Infof(format, args...)
 	}
 }
 
 // Warnf uses the default logger to log a warning message with formatting
-func Warnf(format string, args ...interface{}) {
+func Warnf(format string, args ...any) {
 	if defaultLogger != nil {
 		defaultLogger.Warnf(format, args...)
 	}
 }
 
 // Errorf uses the default logger to log an error message with formatting
-func Errorf(format string, args ...interface{}) {
+func Errorf(format string, args ...any) {
 	if defaultLogger != nil {
 		defaultLogger.Errorf(format, args...)
 	}
 }
 
 // Fatalf uses the default logger to log a fatal message with formatting and exit
-func Fatalf(format string, args ...interface{}) {
+func Fatalf(format string, args ...any) {
 	if defaultLogger != nil {
 		defaultLogger.Fatalf(format, args...)
 	}
 }
 
 // ErrorErr uses the default logger to log an error with a message
-func ErrorErr(err error, msg string, fields ...map[string]interface{}) {
+func ErrorErr(err error, msg string, fields ...map[string]any) {
 	if defaultLogger != nil {
 		defaultLogger.ErrorErr(err, msg, fields...)
 	}
@@ -469,7 +469,7 @@ func WithComponent(component string) *logrus.Entry {
 }
 
 // WithFields adds multiple fields to the default logger entry
-func WithFields(fields map[string]interface{}) *logrus.Entry {
+func WithFields(fields map[string]any) *logrus.Entry {
 	if defaultLogger != nil {
 		return defaultLogger.WithFields(fields)
 	}

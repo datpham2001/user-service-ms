@@ -11,6 +11,10 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+const (
+	ServiceCachePrefix = "user-service-ms"
+)
+
 type Cache struct {
 	logger      *logger.Logger
 	cacheClient *redis.Client
@@ -37,7 +41,8 @@ func (c *Cache) Ping(ctx context.Context) error {
 	return nil
 }
 
-func (c *Cache) Get(ctx context.Context, key string, obj interface{}) error {
+func (c *Cache) Get(ctx context.Context, key string, obj any) error {
+	key = fmt.Sprintf("%s:%s", ServiceCachePrefix, key)
 	result, err := c.cacheClient.Get(ctx, key).Result()
 	if err != nil {
 		return err
@@ -51,7 +56,8 @@ func (c *Cache) Get(ctx context.Context, key string, obj interface{}) error {
 	return nil
 }
 
-func (c *Cache) Set(ctx context.Context, key string, value interface{}, expiration time.Duration) error {
+func (c *Cache) Set(ctx context.Context, key string, value any, expiration time.Duration) error {
+	key = fmt.Sprintf("%s:%s", ServiceCachePrefix, key)
 	if err := c.cacheClient.Set(ctx, key, value, expiration).Err(); err != nil {
 		return err
 	}
@@ -60,6 +66,7 @@ func (c *Cache) Set(ctx context.Context, key string, value interface{}, expirati
 }
 
 func (c *Cache) Delete(ctx context.Context, key string) error {
+	key = fmt.Sprintf("%s:%s", ServiceCachePrefix, key)
 	if err := c.cacheClient.Del(ctx, key).Err(); err != nil {
 		return err
 	}
@@ -68,10 +75,12 @@ func (c *Cache) Delete(ctx context.Context, key string) error {
 }
 
 func (c *Cache) TTL(ctx context.Context, key string) (time.Duration, error) {
+	key = fmt.Sprintf("%s:%s", ServiceCachePrefix, key)
 	return c.cacheClient.TTL(ctx, key).Result()
 }
 
 func (c *Cache) Incr(ctx context.Context, key string) (int64, error) {
+	key = fmt.Sprintf("%s:%s", ServiceCachePrefix, key)
 	return c.cacheClient.Incr(ctx, key).Result()
 }
 

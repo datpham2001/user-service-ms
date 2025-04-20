@@ -14,7 +14,10 @@ require (
 	gorm.io/gorm v1.25.12
 )
 
-require cloud.google.com/go/compute/metadata v0.6.0 // indirect
+require (
+	cloud.google.com/go/compute/metadata v0.6.0 // indirect
+	github.com/rabbitmq/amqp091-go v1.10.0 // indirect
+)
 
 require (
 	github.com/bytedance/sonic v1.11.6 // indirect

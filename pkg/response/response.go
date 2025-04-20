@@ -13,12 +13,12 @@ const (
 )
 
 type Response struct {
-	StatusCode int         `json:"status_code"`
-	Error      string      `json:"error,omitempty"`
-	Data       interface{} `json:"data,omitempty"`
+	StatusCode int    `json:"status_code"`
+	Error      string `json:"error,omitempty"`
+	Data       any    `json:"data,omitempty"`
 }
 
-func NewResponse(statusCode int, err string, data interface{}) *Response {
+func NewResponse(statusCode int, err string, data any) *Response {
 	return &Response{
 		StatusCode: statusCode,
 		Error:      err,
@@ -26,11 +26,11 @@ func NewResponse(statusCode int, err string, data interface{}) *Response {
 	}
 }
 
-func Created(c *gin.Context, data interface{}) {
+func Created(c *gin.Context, data any) {
 	c.JSON(http.StatusCreated, NewResponse(http.StatusCreated, "", data))
 }
 
-func Success(c *gin.Context, data interface{}) {
+func Success(c *gin.Context, data any) {
 	c.JSON(http.StatusOK, NewResponse(http.StatusOK, "", data))
 }
 
@@ -38,7 +38,7 @@ func Error(c *gin.Context, statusCode int, err error) {
 	c.JSON(statusCode, NewResponse(statusCode, err.Error(), nil))
 }
 
-func ErrorWithData(c *gin.Context, statusCode int, err error, data interface{}) {
+func ErrorWithData(c *gin.Context, statusCode int, err error, data any) {
 	c.JSON(statusCode, NewResponse(statusCode, err.Error(), data))
 }
 

@@ -5,14 +5,18 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/datpham/user-service-ms/config"
+	"github.com/datpham/user-service-ms/internal/client/oauth"
 	authHandler "github.com/datpham/user-service-ms/internal/delivery/http/auth"
+	"github.com/datpham/user-service-ms/internal/infra/cache"
+	"github.com/datpham/user-service-ms/internal/infra/database"
+	"github.com/datpham/user-service-ms/internal/infra/rabbitmq"
 	authRepo "github.com/datpham/user-service-ms/internal/repository/auth"
 	authSvc "github.com/datpham/user-service-ms/internal/service/auth"
 	tokensvc "github.com/datpham/user-service-ms/internal/service/token"
-	"github.com/datpham/user-service-ms/pkg/cache"
-	"github.com/datpham/user-service-ms/pkg/database"
+	"github.com/datpham/user-service-ms/pkg/httpclient"
 	"github.com/datpham/user-service-ms/pkg/logger"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -51,7 +55,7 @@ func init() {
 		Level:       logrus.InfoLevel,
 		ServiceName: "user-ms-service",
 		EnableJSON:  false,
-		Fields: map[string]interface{}{
+		Fields: map[string]any{
 			"version": "1.0.0",
 		},
 	}
@@ -72,21 +76,36 @@ func init() {
 
 func main() {
 	ctx := context.Background()
+
+	// init infra
 	serverManager := &ServerManager{}
 	defer func() {
 		pkgDatabase.Close()
 		serverManager.ShutdownGRPCServer()
 		serverManager.ShutdownHTTPServer(ctx)
 	}()
-	// init db connection
 	dbConn := pkgDatabase.GetDB()
+
+	rabbitMQ, err := rabbitmq.NewRabbitMQClient(pkgLogger, appConfig)
+	if err != nil {
+		log.Fatalf("Failed to initialize RabbitMQ: %v", err)
+	}
+
+	if err := rabbitMQ.Setup("user-events", "user-events.*"); err != nil {
+		log.Fatalf("Failed to setup RabbitMQ: %v", err)
+	}
+
+	// init client
+	httpClient := httpclient.NewClient(10 * time.Second)
+	oauthClient := oauth.NewOauthClient(httpClient)
 
 	// init repositories
 	authRepo := authRepo.New(dbConn)
 
 	// init services
 	tokenSvc := tokensvc.NewJwtToken(appConfig.Jwt.Secret)
-	authSvc := authSvc.New(pkgLogger, authRepo, tokenSvc)
+	oauthSvc := tokensvc.NewOAuthService(appConfig, oauthClient)
+	authSvc := authSvc.New(pkgLogger, authRepo, tokenSvc, oauthSvc, pkgCache, rabbitMQ)
 
 	// init handlers
 	authHandler := authHandler.New(authSvc)

@@ -23,7 +23,7 @@ func NewOauthClient(
 	}
 }
 
-func (c *OauthClient) GetGoogleUserInfo(ctx context.Context, token string) (map[string]interface{}, error) {
+func (c *OauthClient) GetGoogleUserInfo(ctx context.Context, token string) (map[string]any, error) {
 	optsHeaders := map[string]string{
 		"Authorization": fmt.Sprintf("Bearer %s", token),
 	}
@@ -39,7 +39,7 @@ func (c *OauthClient) GetGoogleUserInfo(ctx context.Context, token string) (map[
 		return nil, err
 	}
 
-	var userInfo map[string]interface{}
+	var userInfo map[string]any
 	if err := response.DecodeJSON(&userInfo); err != nil {
 		return nil, err
 	}

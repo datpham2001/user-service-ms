@@ -20,7 +20,7 @@ type Client struct {
 type RequestOptions struct {
 	Headers map[string]string
 	Query   map[string]string
-	Body    interface{}
+	Body    any
 }
 
 // Response represents an HTTP response
@@ -31,10 +31,10 @@ type Response struct {
 }
 
 // NewClient creates a new HTTP client with default configuration
-func NewClient(baseURL string) *Client {
+func NewClient(timeout time.Duration) *Client {
 	return &Client{
 		HTTPClient: &http.Client{
-			Timeout: 30 * time.Second,
+			Timeout: timeout,
 		},
 		DefaultHeaders: map[string]string{
 			"Content-Type": "application/json",
@@ -124,7 +124,7 @@ func (c *Client) Request(ctx context.Context, method, url string, opts *RequestO
 }
 
 // DecodeJSON decodes JSON response body into the given target
-func (r *Response) DecodeJSON(target interface{}) error {
+func (r *Response) DecodeJSON(target any) error {
 	return json.Unmarshal(r.Body, target)
 }
 

@@ -45,7 +45,7 @@ func (s *OAuthService) GetGoogleAccessToken(ctx context.Context, code string) (*
 	return token, nil
 }
 
-func (s *OAuthService) GetGoogleUserInfo(ctx context.Context, accessToken string) (map[string]interface{}, error) {
+func (s *OAuthService) GetGoogleUserInfo(ctx context.Context, accessToken string) (map[string]any, error) {
 	userInfo, err := s.oauthClient.GetGoogleUserInfo(ctx, accessToken)
 	if err != nil {
 		return nil, err

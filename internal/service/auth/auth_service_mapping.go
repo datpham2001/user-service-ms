@@ -1,9 +1,11 @@
 package auth
 
-import dto "github.com/datpham/user-service-ms/internal/dto/auth"
+import (
+	respDto "github.com/datpham/user-service-ms/internal/dto/response"
+)
 
-func (s *AuthService) mapToUserLoginResponse(accessToken string, refreshToken string) *dto.UserLoginResponse {
-	return &dto.UserLoginResponse{
+func (s *AuthService) mapToUserLoginResponse(accessToken string, refreshToken string) *respDto.UserLoginResponse {
+	return &respDto.UserLoginResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}

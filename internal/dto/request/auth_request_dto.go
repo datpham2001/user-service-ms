@@ -28,3 +28,19 @@ type GoogleCallbackRequest struct {
 	State string `form:"state" binding:"required"`
 	Code  string `form:"code" binding:"required"`
 }
+
+type RefreshTokenRequest struct {
+	RefreshToken string `json:"refresh_token" binding:"required"`
+}
+
+type ForgotPasswordRequest struct {
+	Email string `json:"email" binding:"required,email"`
+}
+
+type VerifyResetPasswordTokenRequest struct {
+	Token int `json:"token" binding:"required"`
+}
+
+type ResetPasswordRequest struct {
+	Password string `json:"password" binding:"required,min=8"`
+}

@@ -7,6 +7,7 @@ type Config struct {
 	Cache    CacheConfig       `yaml:"cache" mapstructure:"cache"`
 	Jwt      JwtConfig         `yaml:"jwt" mapstructure:"jwt"`
 	OAuth    GoogleOAuthConfig `yaml:"oauth" mapstructure:"oauth"`
+	RabbitMQ RabbitMQConfig    `yaml:"rabbitmq" mapstructure:"rabbitmq"`
 }
 
 type ServerConfig struct {
@@ -55,4 +56,12 @@ type GoogleOAuthConfig struct {
 	ClientID     string `yaml:"client_id" mapstructure:"client_id"`
 	ClientSecret string `yaml:"client_secret" mapstructure:"client_secret"`
 	RedirectURL  string `yaml:"redirect_url" mapstructure:"redirect_url"`
+}
+
+type RabbitMQConfig struct {
+	Host         string `yaml:"host" mapstructure:"host"`
+	Port         string `yaml:"port" mapstructure:"port"`
+	User         string `yaml:"user" mapstructure:"user"`
+	Password     string `yaml:"password" mapstructure:"password"`
+	ExchangeName string `yaml:"exchange_name" mapstructure:"exchange_name"`
 }

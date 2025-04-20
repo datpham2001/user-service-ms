@@ -65,7 +65,7 @@ func (d *Database) Close() error {
 	return nil
 }
 
-func (d *Database) AutoMigrate(models ...interface{}) error {
+func (d *Database) AutoMigrate(models ...any) error {
 	if d.DB == nil {
 		return fmt.Errorf("database connection is not initialized")
 	}
