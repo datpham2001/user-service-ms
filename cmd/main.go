@@ -13,11 +13,11 @@ import (
 	"github.com/datpham/user-service-ms/internal/infra/cache"
 	"github.com/datpham/user-service-ms/internal/infra/database"
 	"github.com/datpham/user-service-ms/internal/infra/rabbitmq"
+	"github.com/datpham/user-service-ms/internal/pkg/httpclient"
+	"github.com/datpham/user-service-ms/internal/pkg/logger"
 	authRepo "github.com/datpham/user-service-ms/internal/repository/auth"
 	authSvc "github.com/datpham/user-service-ms/internal/service/auth"
 	tokensvc "github.com/datpham/user-service-ms/internal/service/token"
-	"github.com/datpham/user-service-ms/pkg/httpclient"
-	"github.com/datpham/user-service-ms/pkg/logger"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 )

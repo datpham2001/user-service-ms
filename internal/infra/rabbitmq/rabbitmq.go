@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/datpham/user-service-ms/config"
-	"github.com/datpham/user-service-ms/pkg/logger"
+	"github.com/datpham/user-service-ms/internal/pkg/logger"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 

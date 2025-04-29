@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	dto "github.com/datpham/user-service-ms/internal/dto/request"
-	"github.com/datpham/user-service-ms/pkg/response"
+	"github.com/datpham/user-service-ms/internal/pkg/response"
 	"github.com/gin-gonic/gin"
 )
 

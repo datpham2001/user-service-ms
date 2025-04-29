@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/datpham/user-service-ms/pkg/httpclient"
+	"github.com/datpham/user-service-ms/internal/pkg/httpclient"
 )
 
 const (

@@ -3,7 +3,7 @@ package middleware
 import (
 	"time"
 
-	"github.com/datpham/user-service-ms/pkg/logger"
+	"github.com/datpham/user-service-ms/internal/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )

@@ -1,6 +1,6 @@
 package dto
 
-import "github.com/datpham/user-service-ms/internal/util"
+import "github.com/datpham/user-service-ms/internal/pkg/validatorutil"
 
 type UserSignupRequest struct {
 	Email    string `json:"email" binding:"required,email"`
@@ -8,11 +8,11 @@ type UserSignupRequest struct {
 }
 
 func (r *UserSignupRequest) Validate() error {
-	if err := util.ValidateEmail(r.Email); err != nil {
+	if err := validatorutil.ValidateEmail(r.Email); err != nil {
 		return err
 	}
 
-	if err := util.ValidatePassword(r.Password); err != nil {
+	if err := validatorutil.ValidatePassword(r.Password); err != nil {
 		return err
 	}
 

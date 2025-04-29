@@ -1,26 +1,28 @@
-package util
+package passwordutil
 
 import (
 	"crypto/rand"
 	"math/big"
-	"os"
 	"strconv"
-	"time"
 
-	"github.com/golang-jwt/jwt"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const (
 	ResetPasswordTokenLength = 5
 )
 
-func GenerateToken(userID string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user_id": userID,
-		"exp":     time.Now().Add(time.Hour * 24).Unix(),
-	})
+func HashPassword(pass string) (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
 
-	return token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	return string(hashedPassword), nil
+}
+
+func CheckPassword(hashedPassword, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
 
 func GenerateResetPasswordToken() (int, error) {

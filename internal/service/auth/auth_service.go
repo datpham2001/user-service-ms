@@ -10,9 +10,10 @@ import (
 	respDto "github.com/datpham/user-service-ms/internal/dto/response"
 	customErr "github.com/datpham/user-service-ms/internal/errors"
 	"github.com/datpham/user-service-ms/internal/infra/rabbitmq"
+	"github.com/datpham/user-service-ms/internal/pkg/cacheutil"
+	"github.com/datpham/user-service-ms/internal/pkg/logger"
+	"github.com/datpham/user-service-ms/internal/pkg/passwordutil"
 	"github.com/datpham/user-service-ms/internal/repository/entity"
-	"github.com/datpham/user-service-ms/internal/util"
-	"github.com/datpham/user-service-ms/pkg/logger"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
@@ -57,7 +58,7 @@ func (s *AuthService) Signup(ctx context.Context, req *reqDto.UserSignupRequest)
 		return customErr.NewCustomError(customErr.ErrInvalidRequest, "Email already exists")
 	}
 
-	hashedPassword, err := util.HashPassword(req.Password)
+	hashedPassword, err := passwordutil.HashPassword(req.Password)
 	if err != nil {
 		return fmt.Errorf("failed to hash password: %w", err)
 	}
@@ -84,7 +85,7 @@ func (s *AuthService) Login(ctx context.Context, req *reqDto.UserLoginRequest) (
 		return nil, fmt.Errorf("failed to get user by email: %s", err.Error())
 	}
 
-	if err := util.CheckPassword(user.Password, req.Password); err != nil {
+	if err := passwordutil.CheckPassword(user.Password, req.Password); err != nil {
 		return nil, customErr.NewCustomError(customErr.ErrInvalidRequest, "Incorrect password")
 	}
 
@@ -182,12 +183,12 @@ func (s *AuthService) ForgotPassword(ctx context.Context, req *reqDto.ForgotPass
 		return customErr.NewCustomError(customErr.ErrNotFound, "User not found")
 	}
 
-	token, err := util.GenerateResetPasswordToken()
+	token, err := passwordutil.GenerateResetPasswordToken()
 	if err != nil {
 		return fmt.Errorf("failed to generate reset password token: %s", err.Error())
 	}
 
-	cacheKey := util.ConstructResetPasswordTokenKey(token)
+	cacheKey := cacheutil.ConstructResetPasswordTokenKey(token)
 	if err = s.cacheSvc.Set(ctx, cacheKey, user.ID, ResetPasswordTokenTTL); err != nil {
 		s.logger.Errorf(
 			"userId: %s, failed to set reset password token: %s",
@@ -223,7 +224,7 @@ func (s *AuthService) ResetPassword(
 	req *reqDto.ResetPasswordRequest,
 ) error {
 	var userID string
-	cacheKey := util.ConstructResetPasswordTokenKey(resetPasswordToken)
+	cacheKey := cacheutil.ConstructResetPasswordTokenKey(resetPasswordToken)
 	if err := s.cacheSvc.Get(ctx, cacheKey, &userID); err != nil {
 		if err == redis.Nil {
 			return customErr.NewCustomError(customErr.ErrNotFound, "Reset password token not found")
@@ -241,7 +242,7 @@ func (s *AuthService) ResetPassword(
 		return fmt.Errorf("failed to get user by id: %s", err.Error())
 	}
 
-	hashedPassword, err := util.HashPassword(req.Password)
+	hashedPassword, err := passwordutil.HashPassword(req.Password)
 	if err != nil {
 		return fmt.Errorf("failed to hash password: %s", err.Error())
 	}
